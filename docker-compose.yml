@@ -1,33 +1,18 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  frontend:
-    build: ./frontend
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
     ports:
-      - "3000:80"
-    depends_on:
-      - backend
-
-  backend:
-    build: ./backend
-    ports:
-      - "5001:5000"
-    environment:
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/tododb
-    depends_on:
-      - postgres
-
-  postgres:
-    image: postgres:14
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: tododb
-    ports:
-      - "5432:5432"
+      - "8080:8080"
+      - "50000:50000"
     volumes:
-      - pg-data:/var/lib/postgresql/data
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /Users/apple/Desktop:/var/jenkins_home/workspace/todo-app-pipeline
+    user: root
+    restart: unless-stopped
 
 volumes:
-  pg-data:
+  jenkins_home:
